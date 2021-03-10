@@ -1,4 +1,13 @@
+/****************************************************************************************
 
+     Author      : Ariton Viorel
+     Created     : 3/2/2021
+     Description : Temperature System
+
+*/
+
+/*****************************************************************************************/
+/**********************************  Includes ********************************************/
 
 extern "C" {
   #include "AM2301.h"
@@ -7,7 +16,8 @@ extern "C" {
 
 #include "stdint.h"
 
-
+/*****************************************************************************************/
+/******************************* Macros & Defines ****************************************/
 
 #define MAIN__SREG   *(volatile uint8_t *)0x005F
 
@@ -74,6 +84,14 @@ extern "C" {
      MAIN__u8Pressed[(A/2)] = 0;                                                       \                                     
   }                                                                                    \
   TIMSK2 = (1 << TOIE2);                                                               \
+
+
+
+  
+/*****************************************************************************************/
+/********************************* Type Definitions **************************************/
+
+
 /**
    The state the LCD is in
 */
@@ -84,6 +102,10 @@ typedef enum {
   MAIN__nDisplay      = 0x02u
 
 } MAIN__tenDisplayState;
+
+
+/*****************************************************************************************/
+/******************************* Global Variables ****************************************/
 
 static float                 MAIN__fTemperature;
 static uint8_t               MAIN__u8SetTemperature      = 23;
@@ -97,17 +119,26 @@ static MAIN__tenDisplayState MAIN__enDisplayState = MAIN__nDisplay;
 static volatile uint8_t      MAIN__u8Delay2s;
 
 
+/*****************************************************************************************/
+/*********************************** Interrupts ******************************************/
+
+
 /*
     8 bit timer - 1024 prescaler
     (2^8 * (1024/16e6))  = ~17ms overflow
     2000/~17ms           = ~122 overflows for 2s
 */
 ISR(TIMER2_OVF_vect) {
+  
   ++MAIN__u8Delay2s;
   ++MAIN__u8Debounce[0];
   ++MAIN__u8Debounce[2];
   ++MAIN__u8Debounce[4];
+  
 }
+
+/*****************************************************************************************/
+/**************************** Public Function Declarations *******************************/
 
 void
 setup(void) {
@@ -235,4 +266,4 @@ loop(void) {
   /* 2ms, increase the duty cycle */
   MAIN__BlockingDelay16msRel(0x1F40);
 
-}
+}/* main.c End */
