@@ -201,7 +201,6 @@ AM2301__vHighTimeCallback(uint32_t u32Ticks) {
 }
 
 
-#include "Arduino.h"
 static int8_t
 AM2301__i8Read(void) {
 
